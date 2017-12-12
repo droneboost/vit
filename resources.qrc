@@ -1,0 +1,23 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/copy.png</file>
+    <file>images/cut.png</file>
+    <file>images/new.png</file>
+    <file>images/open.png</file>
+    <file>images/paste.png</file>
+    <file>images/save.png</file>
+    <file>images/hand.png</file>
+    <file>images/zoomin.png</file>
+    <file>images/zoomout.png</file>
+    <file>images/zoom2.png</file>
+    <file>images/zoom4.png</file>
+    <file>images/cursor.png</file>
+    <file>images/line.png</file>
+    <file>images/arrow.png</file>
+    <file>images/freeline.png</file>
+    <file>images/freepolygon.png</file>
+    <file>images/breakline.png</file>
+    <file>images/polygon.png</file>
+    <file>images/circle.png</file>
+</qresource>
+</RCC>

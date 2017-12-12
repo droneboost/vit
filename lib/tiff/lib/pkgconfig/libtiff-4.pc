@@ -1,0 +1,11 @@
+prefix=/d/misc/libtiff-Release-v4-0-9/install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libtiff
+Description:  Tag Image File Format (TIFF) library.
+Version: 4.0.9
+Libs: -L${libdir} -ltiff
+Libs.private: 
+Cflags: -I${includedir}
