@@ -37,6 +37,8 @@ DEPENDPATH += $$PWD/lib/tiff/include
 #unix:!macx|win32: LIBS += -L$$PWD/lib/opencv_dll/x86/mingw/lib/ -llibopencv_imgcodecs331.dll
 #unix:!macx|win32: LIBS += -L$$PWD/lib/opencv_dll/x86/mingw/lib/ -llibopencv_imgproc331.dll
 #unix:!macx|win32: LIBS += -L$$PWD/lib/opencv_dll/x86/mingw/lib/ -llibopencv_highgui331.dll
+#unix:!macx|win32: LIBS += -L$$PWD/lib/opencv_dll/x86/mingw/lib/ -llibopencv_calib3d331.dll
+#unix:!macx|win32: LIBS += -L$$PWD/lib/opencv_dll/x86/mingw/lib/ -llibopencv_stitching331.dll
 
 INCLUDEPATH += $$PWD/lib/opencv_lib/include
 DEPENDPATH += $$PWD/lib/opencv_lib/x86/mingw/staticlib
@@ -96,6 +98,14 @@ else:unix:!macx|win32-g++: PRE_TARGETDEPS += $$PWD/lib/opencv_lib/x86/mingw/stat
 unix:!macx|win32: LIBS += -L$$PWD/lib/opencv_lib/x86/mingw/staticlib/ -lopencv_features2d331
 win32:!win32-g++: PRE_TARGETDEPS += $$PWD/lib/opencv_lib/x86/mingw/staticlib/opencv_features2d331.lib
 else:unix:!macx|win32-g++: PRE_TARGETDEPS += $$PWD/lib/opencv_lib/x86/mingw/staticlib/libopencv_features2d331.a
+
+unix:!macx|win32: LIBS += -L$$PWD/lib/opencv_lib/x86/mingw/staticlib/ -lopencv_calib3d331
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/lib/opencv_lib/x86/mingw/staticlib/opencv_calib3d331.lib
+else:unix:!macx|win32-g++: PRE_TARGETDEPS += $$PWD/lib/opencv_lib/x86/mingw/staticlib/libopencv_calib3d331.a
+
+unix:!macx|win32: LIBS += -L$$PWD/lib/opencv_lib/x86/mingw/staticlib/ -lopencv_stitching331
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/lib/opencv_lib/x86/mingw/staticlib/opencv_stitching331.lib
+else:unix:!macx|win32-g++: PRE_TARGETDEPS += $$PWD/lib/opencv_lib/x86/mingw/staticlib/libopencv_stitching331.a
 
 LIBS += -lGdi32 -lComdlg32 #used by opencv highgui
 

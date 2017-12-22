@@ -85,5 +85,25 @@ set_target_properties(opencv_features2d PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS opencv_features2d )
 list(APPEND _IMPORT_CHECK_FILES_FOR_opencv_features2d "${_IMPORT_PREFIX}/x86/mingw/lib/libopencv_features2d331.dll.a" "${_IMPORT_PREFIX}/x86/mingw/bin/libopencv_features2d331.dll" )
 
+# Import target "opencv_calib3d" for configuration "Release"
+set_property(TARGET opencv_calib3d APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(opencv_calib3d PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/x86/mingw/lib/libopencv_calib3d331.dll.a"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/x86/mingw/bin/libopencv_calib3d331.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS opencv_calib3d )
+list(APPEND _IMPORT_CHECK_FILES_FOR_opencv_calib3d "${_IMPORT_PREFIX}/x86/mingw/lib/libopencv_calib3d331.dll.a" "${_IMPORT_PREFIX}/x86/mingw/bin/libopencv_calib3d331.dll" )
+
+# Import target "opencv_stitching" for configuration "Release"
+set_property(TARGET opencv_stitching APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(opencv_stitching PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/x86/mingw/lib/libopencv_stitching331.dll.a"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/x86/mingw/bin/libopencv_stitching331.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS opencv_stitching )
+list(APPEND _IMPORT_CHECK_FILES_FOR_opencv_stitching "${_IMPORT_PREFIX}/x86/mingw/lib/libopencv_stitching331.dll.a" "${_IMPORT_PREFIX}/x86/mingw/bin/libopencv_stitching331.dll" )
+
 # Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)

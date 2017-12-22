@@ -10,6 +10,7 @@
 // For example, patented algorithms for non-profit/non-commercial use only.
 /* #undef OPENCV_ENABLE_NONFREE */
 
+#define HAVE_OPENCV_CALIB3D
 #define HAVE_OPENCV_CORE
 #define HAVE_OPENCV_FEATURES2D
 #define HAVE_OPENCV_FLANN
@@ -18,5 +19,6 @@
 #define HAVE_OPENCV_IMGPROC
 #define HAVE_OPENCV_ML
 #define HAVE_OPENCV_PHOTO
+#define HAVE_OPENCV_STITCHING
 
 

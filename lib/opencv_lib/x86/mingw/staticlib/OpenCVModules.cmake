@@ -16,7 +16,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_targetsDefined)
 set(_targetsNotDefined)
 set(_expectedTargets)
-foreach(_expectedTarget zlib libtiff libjpeg libjasper libpng IlmImf opencv_core opencv_flann opencv_imgproc opencv_ml opencv_photo opencv_imgcodecs opencv_highgui opencv_features2d)
+foreach(_expectedTarget zlib libtiff libjpeg libjasper libpng IlmImf opencv_core opencv_flann opencv_imgproc opencv_ml opencv_photo opencv_imgcodecs opencv_highgui opencv_features2d opencv_calib3d opencv_stitching)
   list(APPEND _expectedTargets ${_expectedTarget})
   if(NOT TARGET ${_expectedTarget})
     list(APPEND _targetsNotDefined ${_expectedTarget})
@@ -134,6 +134,20 @@ add_library(opencv_features2d STATIC IMPORTED)
 
 set_target_properties(opencv_features2d PROPERTIES
   INTERFACE_LINK_LIBRARIES "opencv_core;opencv_flann;opencv_imgproc;opencv_imgcodecs;opencv_highgui"
+)
+
+# Create imported target opencv_calib3d
+add_library(opencv_calib3d STATIC IMPORTED)
+
+set_target_properties(opencv_calib3d PROPERTIES
+  INTERFACE_LINK_LIBRARIES "opencv_core;opencv_flann;opencv_imgproc;opencv_imgcodecs;opencv_highgui;opencv_features2d"
+)
+
+# Create imported target opencv_stitching
+add_library(opencv_stitching STATIC IMPORTED)
+
+set_target_properties(opencv_stitching PROPERTIES
+  INTERFACE_LINK_LIBRARIES "opencv_core;opencv_flann;opencv_imgproc;opencv_imgcodecs;opencv_highgui;opencv_features2d;opencv_calib3d"
 )
 
 if(CMAKE_VERSION VERSION_LESS 2.8.12)
