@@ -3,6 +3,7 @@
 
 #include "mainwindow.h"
 #include "mdigvchild.h"
+#include "ctkrangeslider.h"
 
 MainWindow::MainWindow()
     : mdiArea(new QMdiArea)
@@ -189,8 +190,17 @@ void MainWindow::zoomin() { hand(); }
 void MainWindow::zoomout() { todo(); }
 void MainWindow::zoom2() { todo(); }
 void MainWindow::zoom4() { todo(); }
-void MainWindow::cursor() { todo(); }
-void MainWindow::line() { todo(); }
+
+void MainWindow::cursor()
+{
+    mdiArea->cascadeSubWindows();
+}
+
+void MainWindow::line()
+{
+    mdiArea->tileSubWindows();
+}
+
 void MainWindow::arrow() { todo(); }
 void MainWindow::freeline() { todo(); }
 void MainWindow::freepolygon() { todo(); }
@@ -250,8 +260,13 @@ void MainWindow::updateWindowMenu()
 
 MdiGVChild *MainWindow::createMdiChild()
 {
+    //TODO: only support 4 child windows
     MdiGVChild *child = new MdiGVChild;
-    mdiArea->addSubWindow(child);
+    QSize size = mdiArea->size();
+    size = size / 2;
+    //child->resize(size);
+    QMdiSubWindow *sw = mdiArea->addSubWindow(child);
+    sw->resize(size);
     return child;
 }
 
@@ -260,6 +275,7 @@ void MainWindow::createActions()
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     QToolBar *fileToolBar = addToolBar(tr("File"));
     QToolBar *opToolBar = addToolBar(tr("Operate"));
+    QToolBar *gsToolBar = addToolBar(tr("GreyScale"));
 
     const QIcon newIcon = QIcon::fromTheme("document-new", QIcon(":/images/new.png"));
     newAct = new QAction(newIcon, tr("&New"), this);
@@ -326,14 +342,14 @@ void MainWindow::createActions()
     cursorAct = new QAction(cursorIcon, tr("&Cursor"), this);
     cursorAct->setShortcuts(QKeySequence::Paste);
     cursorAct->setStatusTip(tr("Paste content to document"));
-    connect(cursorAct, &QAction::triggered, this, &MainWindow::todo); //TODO
+    connect(cursorAct, &QAction::triggered, this, &MainWindow::cursor); //TODO
     opToolBar->addAction(cursorAct);
 
     const QIcon lineIcon = QIcon::fromTheme("document-paste", QIcon(":/images/line.png"));
     lineAct = new QAction(lineIcon, tr("&Line"), this);
     lineAct->setShortcuts(QKeySequence::Paste);
     lineAct->setStatusTip(tr("Paste content to document"));
-    connect(lineAct, &QAction::triggered, this, &MainWindow::todo); //TODO
+    connect(lineAct, &QAction::triggered, this, &MainWindow::line); //TODO
     opToolBar->addAction(lineAct);
 
     const QIcon arrowIcon = QIcon::fromTheme("document-paste", QIcon(":/images/arrow.png"));
@@ -379,7 +395,17 @@ void MainWindow::createActions()
     circleAct->setStatusTip(tr("Paste content to document"));
     connect(circleAct, &QAction::triggered, this, &MainWindow::todo); //TODO
     opToolBar->addAction(circleAct);
+    opToolBar->resize(300, opToolBar->height());
 
+
+    //greyscale slider
+    ctkRangeSlider *rs= new ctkRangeSlider(Qt::Horizontal);
+    rs->setValues(0, 65535);
+    rs->setMaximumWidth(250);
+    gsToolBar->addWidget(rs);
+    //gsToolBar->window()->resize(128, gsToolBar->height());
+    //gsToolBar->setGeometry(gsToolBar->geometry().x(), gsToolBar->geometry().y(), 128, gsToolBar->height());
+    //gsToolBar->resize(128, gsToolBar->height());
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     const QIcon saveAsIcon = QIcon::fromTheme("document-save-as");
     saveAsAct = new QAction(saveAsIcon, tr("Save &As..."), this);

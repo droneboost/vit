@@ -14,11 +14,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
            mainwindow.cpp \
            mdigvchild.cpp \
-    vitiffhandler.cpp
+    vitiffhandler.cpp \
+    ctkrangeslider.cpp
 
 HEADERS  += mainwindow.h \
             mdigvchild.h \
-    vitiffhandler.h
+    vitiffhandler.h \
+    ctkrangeslider.h
 
 FORMS    +=
 

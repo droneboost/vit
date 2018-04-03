@@ -1,4 +1,5 @@
 #include <QtWidgets>
+#include <QMdiArea>
 #include <QImageReader>
 #include <tiffio.h>
 
@@ -25,7 +26,6 @@ void MdiGVChild::newFile()
     isUntitled = true;
     curFile = tr("imaget%1.tif").arg(sequenceNumber++);
     setWindowTitle(curFile + "[*]");
-
     // connect(document(), &QTextDocument::contentsChanged, this, &MdiChild::documentWasModified);
 }
 
@@ -52,8 +52,8 @@ bool MdiGVChild::loadFile(const QString &fileName)
     }
     //TODO: Aaron, add your image filter code herebelow for test!
 
-    cv::namedWindow( "Display OpenCV window", CV_WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "Display OpenCV window", m_Mat );
+    //cv::namedWindow( "Display OpenCV window", CV_WINDOW_AUTOSIZE );// Create a window for display.
+    //cv::imshow( "Display OpenCV window", m_Mat );
 
     //Save file back
     std::vector<int> params;
@@ -61,7 +61,7 @@ bool MdiGVChild::loadFile(const QString &fileName)
     params.push_back(1);
     params.push_back(TIFFTAG_ROWSPERSTRIP );
     params.push_back(512);
-    cv::imwrite("D:/misc/testimg/000.tif", m_Mat, params);
+    //cv::imwrite("D:/misc/testimg/000.tif", m_Mat, params);
 #else // USE_OPENCV_C_IF
     mp_Mat = cvLoadImageM(fileName.toStdString().c_str(), CV_LOAD_IMAGE_ANYDEPTH|CV_LOAD_IMAGE_GRAYSCALE );
     if (!mp_Mat) {
@@ -195,6 +195,8 @@ void MdiGVChild::closeEvent(QCloseEvent *event)
 {
     if (maybeSave()) {
         event->accept();
+        QMdiArea* MdiArea = qobject_cast<QMdiArea *>(this->parent()->parent()->parent());
+        MdiArea->removeSubWindow(this);
     } else {
         event->ignore();
     }
