@@ -1,6 +1,6 @@
 //#include <QSettings>
 #include <QtWidgets>
-
+#include <qdebug.h>
 #include "mainwindow.h"
 #include "mdigvchild.h"
 #include "ctkrangeslider.h"
@@ -8,20 +8,28 @@
 MainWindow::MainWindow()
     : mdiArea(new QMdiArea)
 {
+    setWindowTitle(tr("VisualInspectTool"));
+    setUnifiedTitleAndToolBarOnMac(true);
+
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setCentralWidget(mdiArea);
-    connect(mdiArea, &QMdiArea::subWindowActivated,
-                this, &MainWindow::updateMenus);
+    connect(mdiArea, &QMdiArea::subWindowActivated, this, &MainWindow::updateMenus);
 
-    createActions();
+    createFileToolbarActions();
+    createZoomToolbarActions();
+    createDrawToolbarActions();
+    createMarkToolbarActions();
+    createGraphToolbarActions();
+    createViewToolbarActions();
+    createLayoutToolbarActions();
+    createGreyscaleToolbarActions();
+    createMenuActions();
+
     createStatusBar();
     updateMenus();
 
     readSettings();
-
-    setWindowTitle(tr("VisualInspectTool"));
-    setUnifiedTitleAndToolBarOnMac(true);
 }
 
 
@@ -179,35 +187,161 @@ void MainWindow::todo()
             tr("This action is to be implemented "));
 }
 
+//Zoom
 void MainWindow::hand()
 {
     MdiGVChild *child = activeMdiChild();
     if (child)
         child->rotate(90.0);
 }
+void MainWindow::zoom4x()
+{
 
-void MainWindow::zoomin() { hand(); }
-void MainWindow::zoomout() { todo(); }
-void MainWindow::zoom2() { todo(); }
-void MainWindow::zoom4() { todo(); }
+}
+void MainWindow::zoomin()
+{
 
+}
+void MainWindow::zoomout()
+{
+
+}
+void MainWindow::zoomregion()
+{
+
+}
+void MainWindow::zoomfit()
+{
+
+}
+
+// Toolbar Draw
 void MainWindow::cursor()
+{
+
+}
+void MainWindow::line()
+{
+
+}
+void MainWindow::pointer()
+{
+
+}
+void MainWindow::opencurve()
+{
+
+}
+void MainWindow::closedcurve()
+{
+
+}
+void MainWindow::polyline()
+{
+
+}
+void MainWindow::ploygon()
+{
+
+}
+void MainWindow::rectangle()
+{
+
+}
+void MainWindow::ellipse()
+{
+
+}
+void MainWindow::removexxx()
+{
+
+}
+void MainWindow::freehand()
+{
+
+}
+void MainWindow::text()
+{
+
+}
+void MainWindow::note()
+{
+
+}
+void MainWindow::stamp()
+{
+
+}
+void MainWindow::removeobject()
+{
+
+}
+void MainWindow::drawsetting()
+{
+
+}
+
+// Toolbar Mark
+void MainWindow::ruler()
+{
+
+}
+void MainWindow::angle()
+{
+
+}
+void MainWindow::marksetting()
+{
+
+}
+
+// Toolbar Graph
+void MainWindow::lineprofile()
+{
+
+}
+void MainWindow::histogram()
+{
+
+}
+
+// Toolbar View
+void MainWindow::flipV()
+{
+
+}
+void MainWindow::flipH()
+{
+
+}
+void MainWindow::rotate()
+{
+
+}
+
+// Toolbar Layout
+void MainWindow::oneimage()
 {
     mdiArea->cascadeSubWindows();
 }
+void MainWindow::twoimageV()
+{
 
-void MainWindow::line()
+}
+void MainWindow::twoimageH()
+{
+
+}
+void MainWindow::fourimage()
 {
     mdiArea->tileSubWindows();
 }
 
-void MainWindow::arrow() { todo(); }
-void MainWindow::freeline() { todo(); }
-void MainWindow::freepolygon() { todo(); }
-void MainWindow::breakline() { todo(); }
-void MainWindow::polygon() { todo(); }
-void MainWindow::circle() { todo(); }
+//Greyscale
+void MainWindow::flipcolor()
+{
 
+}
 void MainWindow::updateMenus()
 {
     bool hasMdiChild = (activeMdiChild() != 0);
@@ -264,149 +398,18 @@ MdiGVChild *MainWindow::createMdiChild()
     MdiGVChild *child = new MdiGVChild;
     QSize size = mdiArea->size();
     size = size / 2;
-    //child->resize(size);
     QMdiSubWindow *sw = mdiArea->addSubWindow(child);
     sw->resize(size);
     return child;
 }
 
-void MainWindow::createActions()
+void MainWindow::createMenuActions()
 {
-    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-    QToolBar *fileToolBar = addToolBar(tr("File"));
-    QToolBar *opToolBar = addToolBar(tr("Operate"));
-    QToolBar *gsToolBar = addToolBar(tr("GreyScale"));
-
-    const QIcon newIcon = QIcon::fromTheme("document-new", QIcon(":/images/new.png"));
-    newAct = new QAction(newIcon, tr("&New"), this);
-    newAct->setShortcuts(QKeySequence::New);
-    newAct->setStatusTip(tr("Create a new file"));
-    connect(newAct, &QAction::triggered, this, &MainWindow::newFile);
+    fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
-    fileToolBar->addAction(newAct);
-
-    const QIcon openIcon = QIcon::fromTheme("document-open", QIcon(":/images/open.png"));
-    QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
-    openAct->setShortcuts(QKeySequence::Open);
-    openAct->setStatusTip(tr("Open an existing file"));
-    connect(openAct, &QAction::triggered, this, &MainWindow::open); //TODO
     fileMenu->addAction(openAct);
-    fileToolBar->addAction(openAct);
+    fileMenu->addAction(saveAct);
 
-    const QIcon saveIcon = QIcon::fromTheme("document-save", QIcon(":/images/save.png"));
-    saveAct = new QAction(saveIcon, tr("&Save"), this);
-    saveAct->setShortcuts(QKeySequence::Save);
-    saveAct->setStatusTip(tr("Save the document to disk"));
-    connect(saveAct, &QAction::triggered, this, &MainWindow::save); //TODO
-    fileToolBar->addAction(saveAct);
-
-    fileToolBar->addSeparator();
-
-    const QIcon zoominIcon = QIcon::fromTheme("document-save", QIcon(":/images/zoomin.png"));
-    zoominAct = new QAction(zoominIcon, tr("&Zoomin"), this);
-    zoominAct->setShortcuts(QKeySequence::Save);
-    zoominAct->setStatusTip(tr("Save the document to disk"));
-    connect(zoominAct, &QAction::triggered, this, &MainWindow::zoomin); //TODO
-    fileToolBar->addAction(zoominAct);
-
-    const QIcon zoomoutIcon = QIcon::fromTheme("document-save", QIcon(":/images/zoomout.png"));
-    zoomoutAct = new QAction(zoomoutIcon, tr("&Zoomout"), this);
-    zoomoutAct->setShortcuts(QKeySequence::Save);
-    zoomoutAct->setStatusTip(tr("Save the document to disk"));
-    connect(zoomoutAct, &QAction::triggered, this, &MainWindow::todo); //TODO
-    fileToolBar->addAction(zoomoutAct);
-
-    const QIcon zoom2Icon = QIcon::fromTheme("document-save", QIcon(":/images/zoom2.png"));
-    zoom2Act = new QAction(zoom2Icon, tr("&Zoom2"), this);
-    zoom2Act->setShortcuts(QKeySequence::Save);
-    zoom2Act->setStatusTip(tr("Save the document to disk"));
-    connect(zoom2Act, &QAction::triggered, this, &MainWindow::todo); //TODO
-    fileToolBar->addAction(zoom2Act);
-
-    const QIcon zoom4Icon = QIcon::fromTheme("document-save", QIcon(":/images/zoom4.png"));
-    zoom4Act = new QAction(zoom4Icon, tr("&Zoom4"), this);
-    zoom4Act->setShortcuts(QKeySequence::Save);
-    zoom4Act->setStatusTip(tr("Save the document to disk"));
-    connect(zoom4Act, &QAction::triggered, this, &MainWindow::todo); //TODO
-    fileToolBar->addAction(zoom4Act);
-
-    const QIcon pasteIcon = QIcon::fromTheme("document-paste", QIcon(":/images/paste.png"));
-    pasteAct = new QAction(pasteIcon, tr("&Paste"), this);
-    pasteAct->setShortcuts(QKeySequence::Paste);
-    pasteAct->setStatusTip(tr("Paste content to document"));
-    connect(pasteAct, &QAction::triggered, this, &MainWindow::todo); //TODO
-    fileToolBar->addAction(pasteAct);
-
-    //optoolbar
-    const QIcon cursorIcon = QIcon::fromTheme("document-paste", QIcon(":/images/cursor.png"));
-    cursorAct = new QAction(cursorIcon, tr("&Cursor"), this);
-    cursorAct->setShortcuts(QKeySequence::Paste);
-    cursorAct->setStatusTip(tr("Paste content to document"));
-    connect(cursorAct, &QAction::triggered, this, &MainWindow::cursor); //TODO
-    opToolBar->addAction(cursorAct);
-
-    const QIcon lineIcon = QIcon::fromTheme("document-paste", QIcon(":/images/line.png"));
-    lineAct = new QAction(lineIcon, tr("&Line"), this);
-    lineAct->setShortcuts(QKeySequence::Paste);
-    lineAct->setStatusTip(tr("Paste content to document"));
-    connect(lineAct, &QAction::triggered, this, &MainWindow::line); //TODO
-    opToolBar->addAction(lineAct);
-
-    const QIcon arrowIcon = QIcon::fromTheme("document-paste", QIcon(":/images/arrow.png"));
-    arrowAct = new QAction(arrowIcon, tr("&Arrow"), this);
-    arrowAct->setShortcuts(QKeySequence::Paste);
-    arrowAct->setStatusTip(tr("Paste content to document"));
-    connect(arrowAct, &QAction::triggered, this, &MainWindow::todo); //TODO
-    opToolBar->addAction(arrowAct);
-
-    opToolBar->addSeparator();
-
-    const QIcon freelineIcon = QIcon::fromTheme("document-paste", QIcon(":/images/freeline.png"));
-    freelineAct = new QAction(freelineIcon, tr("&Freeline"), this);
-    freelineAct->setShortcuts(QKeySequence::Paste);
-    freelineAct->setStatusTip(tr("Paste content to document"));
-    connect(freelineAct, &QAction::triggered, this, &MainWindow::todo); //TODO
-    opToolBar->addAction(freelineAct);
-
-    const QIcon freepolygonIcon = QIcon::fromTheme("document-paste", QIcon(":/images/freepolygon.png"));
-    freepolygonAct = new QAction(freepolygonIcon, tr("&FreePolygon"), this);
-    freepolygonAct->setShortcuts(QKeySequence::Paste);
-    freepolygonAct->setStatusTip(tr("Paste content to document"));
-    connect(freepolygonAct, &QAction::triggered, this, &MainWindow::todo); //TODO
-    opToolBar->addAction(freepolygonAct);
-
-    const QIcon breaklineIcon = QIcon::fromTheme("document-paste", QIcon(":/images/breakline.png"));
-    breaklineAct = new QAction(breaklineIcon, tr("&Breakline"), this);
-    breaklineAct->setShortcuts(QKeySequence::Paste);
-    breaklineAct->setStatusTip(tr("Paste content to document"));
-    connect(breaklineAct, &QAction::triggered, this, &MainWindow::todo); //TODO
-    opToolBar->addAction(breaklineAct);
-
-    const QIcon polygonIcon = QIcon::fromTheme("document-paste", QIcon(":/images/polygon.png"));
-    polygonAct = new QAction(polygonIcon, tr("&Polygon"), this);
-    polygonAct->setShortcuts(QKeySequence::Paste);
-    polygonAct->setStatusTip(tr("Paste content to document"));
-    connect(polygonAct, &QAction::triggered, this, &MainWindow::todo); //TODO
-    opToolBar->addAction(polygonAct);
-
-    const QIcon circleIcon = QIcon::fromTheme("document-paste", QIcon(":/images/circle.png"));
-    circleAct = new QAction(circleIcon, tr("&Circle"), this);
-    circleAct->setShortcuts(QKeySequence::Paste);
-    circleAct->setStatusTip(tr("Paste content to document"));
-    connect(circleAct, &QAction::triggered, this, &MainWindow::todo); //TODO
-    opToolBar->addAction(circleAct);
-    opToolBar->resize(300, opToolBar->height());
-
-
-    //greyscale slider
-    ctkRangeSlider *rs= new ctkRangeSlider(Qt::Horizontal);
-    rs->setValues(0, 65535);
-    rs->setMaximumWidth(250);
-    gsToolBar->addWidget(rs);
-    //gsToolBar->window()->resize(128, gsToolBar->height());
-    //gsToolBar->setGeometry(gsToolBar->geometry().x(), gsToolBar->geometry().y(), 128, gsToolBar->height());
-    //gsToolBar->resize(128, gsToolBar->height());
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     const QIcon saveAsIcon = QIcon::fromTheme("document-save-as");
     saveAsAct = new QAction(saveAsIcon, tr("Save &As..."), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
@@ -485,6 +488,299 @@ void MainWindow::createActions()
     aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
 }
 
+void MainWindow::createFileToolbarActions()
+{
+    fileToolBar = addToolBar(tr("FileToolBar"));
+
+    const QIcon newIcon = QIcon::fromTheme("document-new", QIcon(":/images/new.png"));
+    newAct = new QAction(newIcon, tr("&New"), this);
+    newAct->setShortcuts(QKeySequence::New);
+    newAct->setStatusTip(tr("Create a new file"));
+    connect(newAct, &QAction::triggered, this, &MainWindow::newFile);
+    fileToolBar->addAction(newAct);
+
+    const QIcon openIcon = QIcon::fromTheme("document-open", QIcon(":/images/open.png"));
+    QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
+    openAct->setShortcuts(QKeySequence::Open);
+    openAct->setStatusTip(tr("Open an existing file"));
+    connect(openAct, &QAction::triggered, this, &MainWindow::open);
+    fileToolBar->addAction(openAct);
+
+    const QIcon saveIcon = QIcon::fromTheme("document-save", QIcon(":/images/save.png"));
+    saveAct = new QAction(saveIcon, tr("&Save"), this);
+    saveAct->setShortcuts(QKeySequence::Save);
+    saveAct->setStatusTip(tr("Save the document to disk"));
+    connect(saveAct, &QAction::triggered, this, &MainWindow::save);
+    fileToolBar->addAction(saveAct);
+}
+
+void MainWindow::createZoomToolbarActions()
+{
+    zoomToolBar = addToolBar(tr("ZoomToolBar"));
+
+    const QIcon handIcon = QIcon::fromTheme("document-new", QIcon(":/images/hand.png"));
+    handAct = new QAction(handIcon, tr("&Hand"), this);
+    handAct->setStatusTip(tr("Toggle the image"));
+    connect(handAct, &QAction::triggered, this, &MainWindow::hand);
+    zoomToolBar->addAction(handAct);
+
+    const QIcon zoom4xIcon = QIcon::fromTheme("document-new", QIcon(":/images/zoom4x.png"));
+    zoom4xAct = new QAction(zoom4xIcon, tr("&Zoom4x"), this);
+    zoom4xAct->setStatusTip(tr("Zoom 4times"));
+    connect(zoom4xAct, &QAction::triggered, this, &MainWindow::zoom4x);
+    zoomToolBar->addAction(zoom4xAct);
+
+    const QIcon zoominIcon = QIcon::fromTheme("document-new", QIcon(":/images/zoomin.png"));
+    zoominAct = new QAction(zoominIcon, tr("&ZoomIn"), this);
+    zoominAct->setStatusTip(tr("Zoom In"));
+    connect(zoominAct, &QAction::triggered, this, &MainWindow::zoomin);
+    zoomToolBar->addAction(zoominAct);
+
+    const QIcon zoomoutIcon = QIcon::fromTheme("document-new", QIcon(":/images/zoomout.png"));
+    zoomoutAct = new QAction(zoomoutIcon, tr("&ZoomOut"), this);
+    zoomoutAct->setStatusTip(tr("Zoom out"));
+    connect(zoomoutAct, &QAction::triggered, this, &MainWindow::zoomout);
+    zoomToolBar->addAction(zoomoutAct);
+
+    const QIcon zoomregionIcon = QIcon::fromTheme("document-new", QIcon(":/images/zoomregion.png"));
+    zoomregionAct = new QAction(zoomregionIcon, tr("&ZoomRegion"), this);
+    zoomregionAct->setStatusTip(tr("Zoom Region"));
+    connect(zoomregionAct, &QAction::triggered, this, &MainWindow::zoomregion);
+    zoomToolBar->addAction(zoomregionAct);
+
+    const QIcon zoomfitIcon = QIcon::fromTheme("document-new", QIcon(":/images/zoomfit.png"));
+    zoomfitAct = new QAction(zoomfitIcon, tr("&ZoomFit"), this);
+    zoomfitAct->setStatusTip(tr("Zoom Fit"));
+    connect(zoomfitAct, &QAction::triggered, this, &MainWindow::zoomfit);
+    zoomToolBar->addAction(zoomfitAct);
+}
+
+void MainWindow::createDrawToolbarActions()
+{
+    drawToolBar = addToolBar(tr("DrawToolBar"));
+
+    const QIcon cursorIcon = QIcon::fromTheme("document-new", QIcon(":/images/cursor.png"));
+    cursorAct = new QAction(cursorIcon, tr("&Cursor"), this);
+    cursorAct->setStatusTip(tr("Cursor"));
+    connect(cursorAct, &QAction::triggered, this, &MainWindow::cursor);
+    drawToolBar->addAction(cursorAct);
+
+    const QIcon lineIcon = QIcon::fromTheme("document-new", QIcon(":/images/line.png"));
+    lineAct = new QAction(lineIcon, tr("&Line"), this);
+    lineAct->setStatusTip(tr("Draw Line"));
+    connect(lineAct, &QAction::triggered, this, &MainWindow::line);
+    drawToolBar->addAction(lineAct);
+
+    const QIcon pointerIcon = QIcon::fromTheme("document-new", QIcon(":/images/pointer.png"));
+    pointerAct = new QAction(pointerIcon, tr("&Pointer"), this);
+    pointerAct->setStatusTip(tr("Draw Pointer"));
+    connect(pointerAct, &QAction::triggered, this, &MainWindow::pointer);
+    drawToolBar->addAction(pointerAct);
+
+    drawToolBar->addSeparator();
+
+    const QIcon opencurveIcon = QIcon::fromTheme("document-new", QIcon(":/images/opencurve.png"));
+    opencurveAct = new QAction(opencurveIcon, tr("&OpenCurve"), this);
+    opencurveAct->setStatusTip(tr("Draw Open Curve"));
+    connect(opencurveAct, &QAction::triggered, this, &MainWindow::opencurve);
+    drawToolBar->addAction(opencurveAct);
+
+    const QIcon closedcurveIcon = QIcon::fromTheme("document-new", QIcon(":/images/closedcurve.png"));
+    closedcurveAct = new QAction(closedcurveIcon, tr("&ClosedCurve"), this);
+    closedcurveAct->setStatusTip(tr("Draw Closed Curve"));
+    connect(closedcurveAct, &QAction::triggered, this, &MainWindow::closedcurve);
+    drawToolBar->addAction(closedcurveAct);
+
+    const QIcon polylineIcon = QIcon::fromTheme("document-new", QIcon(":/images/polyline.png"));
+    polylineAct = new QAction(polylineIcon, tr("&Ployline"), this);
+    polylineAct->setStatusTip(tr("Draw Ployline"));
+    connect(polylineAct, &QAction::triggered, this, &MainWindow::polyline);
+    drawToolBar->addAction(polylineAct);
+
+    const QIcon ploygonIcon = QIcon::fromTheme("document-new", QIcon(":/images/polygon.png"));
+    ploygonAct = new QAction(ploygonIcon, tr("&Ploygon"), this);
+    ploygonAct->setStatusTip(tr("Draw Ploygon"));
+    connect(ploygonAct, &QAction::triggered, this, &MainWindow::ploygon);
+    drawToolBar->addAction(ploygonAct);
+
+    const QIcon rectangleIcon = QIcon::fromTheme("document-new", QIcon(":/images/rectangle.png"));
+    rectangleAct = new QAction(rectangleIcon, tr("&Rectangle"), this);
+    rectangleAct->setStatusTip(tr("Draw Rectangle"));
+    connect(rectangleAct, &QAction::triggered, this, &MainWindow::rectangle);
+    drawToolBar->addAction(rectangleAct);
+
+    const QIcon ellipseIcon = QIcon::fromTheme("document-new", QIcon(":/images/ellipse.png"));
+    ellipseAct = new QAction(ellipseIcon, tr("&Ellipse"), this);
+    ellipseAct->setStatusTip(tr("Draw Ellipse"));
+    connect(ellipseAct, &QAction::triggered, this, &MainWindow::ellipse);
+    drawToolBar->addAction(ellipseAct);
+
+    drawToolBar->addSeparator();
+
+    const QIcon removexxxIcon = QIcon::fromTheme("document-new", QIcon(":/images/removexxx.png"));
+    removexxxAct = new QAction(removexxxIcon, tr("&RemoveXXX"), this);
+    removexxxAct->setStatusTip(tr("Remove XXX"));
+    connect(removexxxAct, &QAction::triggered, this, &MainWindow::removexxx);
+    drawToolBar->addAction(removexxxAct);
+
+    const QIcon freehandIcon = QIcon::fromTheme("document-new", QIcon(":/images/freehand.png"));
+    freehandAct = new QAction(freehandIcon, tr("&FreeHand"), this);
+    freehandAct->setStatusTip(tr("Free Hand"));
+    connect(freehandAct, &QAction::triggered, this, &MainWindow::freehand);
+    drawToolBar->addAction(freehandAct);
+
+    drawToolBar->addSeparator();
+
+    const QIcon textIcon = QIcon::fromTheme("document-new", QIcon(":/images/text.png"));
+    textAct = new QAction(textIcon, tr("&Text"), this);
+    textAct->setStatusTip(tr("Add Text"));
+    connect(textAct, &QAction::triggered, this, &MainWindow::text);
+    drawToolBar->addAction(textAct);
+
+    const QIcon noteIcon = QIcon::fromTheme("document-new", QIcon(":/images/note.png"));
+    noteAct = new QAction(noteIcon, tr("&Note"), this);
+    noteAct->setStatusTip(tr("Add Note"));
+    connect(noteAct, &QAction::triggered, this, &MainWindow::note);
+    drawToolBar->addAction(noteAct);
+
+    drawToolBar->addSeparator();
+
+    const QIcon removeobjectIcon = QIcon::fromTheme("document-new", QIcon(":/images/removeobject.png"));
+    removeobjectAct = new QAction(removeobjectIcon, tr("&RemoveObject"), this);
+    removeobjectAct->setStatusTip(tr("Remove Object"));
+    connect(removeobjectAct, &QAction::triggered, this, &MainWindow::removeobject);
+    drawToolBar->addAction(removeobjectAct);
+
+    const QIcon drawsettingIcon = QIcon::fromTheme("document-new", QIcon(":/images/drawsetting.png"));
+    drawsettingAct = new QAction(drawsettingIcon, tr("&DrawSetting"), this);
+    drawsettingAct->setStatusTip(tr("Draw Setting"));
+    connect(drawsettingAct, &QAction::triggered, this, &MainWindow::drawsetting);
+    drawToolBar->addAction(drawsettingAct);
+}
+
+void MainWindow::createMarkToolbarActions()
+{
+    markToolBar = addToolBar(tr("MarkToolBar"));
+
+    const QIcon rulerIcon = QIcon::fromTheme("document-new", QIcon(":/images/ruler.png"));
+    rulerAct = new QAction(rulerIcon, tr("&Ruler"), this);
+    rulerAct->setStatusTip(tr("Ruler Mark"));
+    connect(rulerAct, &QAction::triggered, this, &MainWindow::ruler);
+    markToolBar->addAction(rulerAct);
+
+    const QIcon angleIcon = QIcon::fromTheme("document-new", QIcon(":/images/angle.png"));
+    angleAct = new QAction(angleIcon, tr("&Angle"), this);
+    angleAct->setStatusTip(tr("Angle Mark"));
+    connect(angleAct, &QAction::triggered, this, &MainWindow::angle);
+    markToolBar->addAction(angleAct);
+
+    const QIcon marksettingIcon = QIcon::fromTheme("document-new", QIcon(":/images/marksetting.png"));
+    marksettingAct = new QAction(marksettingIcon, tr("&MarkSetting"), this);
+    marksettingAct->setStatusTip(tr("Mark Setting"));
+    connect(marksettingAct, &QAction::triggered, this, &MainWindow::marksetting);
+    markToolBar->addAction(marksettingAct);
+}
+
+void MainWindow::createGraphToolbarActions()
+{
+    graphToolBar = addToolBar(tr("GraphToolBar"));
+
+    const QIcon lineprofileIcon = QIcon::fromTheme("document-new", QIcon(":/images/lineprofile.png"));
+    lineprofileAct = new QAction(lineprofileIcon, tr("&LineProfile"), this);
+    lineprofileAct->setStatusTip(tr("Line Profile"));
+    connect(lineprofileAct, &QAction::triggered, this, &MainWindow::lineprofile);
+    graphToolBar->addAction(lineprofileAct);
+
+    const QIcon histogramIcon = QIcon::fromTheme("document-new", QIcon(":/images/histogram.png"));
+    histogramAct = new QAction(histogramIcon, tr("&Histogram"), this);
+    histogramAct->setStatusTip(tr("Histogram"));
+    connect(histogramAct, &QAction::triggered, this, &MainWindow::histogram);
+    graphToolBar->addAction(histogramAct);
+}
+
+void MainWindow::createViewToolbarActions()
+{
+    viewToolBar = addToolBar(tr("ViewToolBar"));
+
+    const QIcon flipVIcon = QIcon::fromTheme("document-new", QIcon(":/images/flipV.png"));
+    flipVAct = new QAction(flipVIcon, tr("&Mirror"), this);
+    flipVAct->setStatusTip(tr("Mirror Image"));
+    connect(flipVAct, &QAction::triggered, this, &MainWindow::flipV);
+    viewToolBar->addAction(flipVAct);
+
+    const QIcon flipHIcon = QIcon::fromTheme("document-new", QIcon(":/images/flipH.png"));
+    flipHAct = new QAction(flipHIcon, tr("&Flip"), this);
+    flipHAct->setStatusTip(tr("Flip Image"));
+    connect(flipHAct, &QAction::triggered, this, &MainWindow::flipH);
+    viewToolBar->addAction(flipHAct);
+
+    const QIcon rotateIcon = QIcon::fromTheme("document-new", QIcon(":/images/rotate.png"));
+    rotateAct = new QAction(rotateIcon, tr("&Rotate"), this);
+    rotateAct->setStatusTip(tr("Rotate Image"));
+    connect(rotateAct, &QAction::triggered, this, &MainWindow::rotate);
+    viewToolBar->addAction(rotateAct);
+}
+
+void MainWindow::createLayoutToolbarActions()
+{
+    layoutToolBar = addToolBar(tr("LayoutToolBar"));
+
+    const QIcon oneimageIcon = QIcon::fromTheme("document-new", QIcon(":/images/oneimage.png"));
+    oneimageAct = new QAction(oneimageIcon, tr("&OneImage"), this);
+    oneimageAct->setStatusTip(tr("One Image"));
+    connect(oneimageAct, &QAction::triggered, this, &MainWindow::oneimage);
+    layoutToolBar->addAction(oneimageAct);
+
+    const QIcon twoimageVIcon = QIcon::fromTheme("document-new", QIcon(":/images/twoimageV.png"));
+    twoimageVAct = new QAction(twoimageVIcon, tr("&TwoImageV"), this);
+    twoimageVAct->setStatusTip(tr("Two ImageV"));
+    connect(twoimageVAct, &QAction::triggered, this, &MainWindow::twoimageV);
+    layoutToolBar->addAction(twoimageVAct);
+
+    const QIcon twoimageHIcon = QIcon::fromTheme("document-new", QIcon(":/images/twoimageH.png"));
+    twoimageHAct = new QAction(twoimageHIcon, tr("&TwoImageH"), this);
+    twoimageHAct->setStatusTip(tr("Two ImageH"));
+    connect(twoimageHAct, &QAction::triggered, this, &MainWindow::twoimageH);
+    layoutToolBar->addAction(twoimageHAct);
+
+    const QIcon fourimageIcon = QIcon::fromTheme("document-new", QIcon(":/images/fourimage.png"));
+    fourimageAct = new QAction(fourimageIcon, tr("&FourImage"), this);
+    fourimageAct->setStatusTip(tr("Four Image"));
+    connect(fourimageAct, &QAction::triggered, this, &MainWindow::fourimage);
+    layoutToolBar->addAction(fourimageAct);
+}
+
+void MainWindow::createGreyscaleToolbarActions()
+{
+    greyscaleToolBar = addToolBar(tr("GreyScale"));
+
+    rangeSlider = new ctkRangeSlider(Qt::Horizontal);
+    rangeSlider->setMinimum(0);
+    rangeSlider->setMaximum(65535);
+    rangeSlider->setMaximumPosition(65535);
+    rangeSlider->setMaximumWidth(250);
+    greyscaleToolBar->addWidget(rangeSlider);
+    connect(rangeSlider, &ctkRangeSlider::valuesChanged, this, &MainWindow::grayscaleChanged);
+
+    const QIcon flipcolorIcon = QIcon::fromTheme("document-new", QIcon(":/images/flipcolor.png"));
+    flipcolorAct = new QAction(flipcolorIcon, tr("&FlipColor"), this);
+    flipcolorAct->setStatusTip(tr("FlipColor"));
+    connect(flipcolorAct, &QAction::triggered, this, &MainWindow::flipcolor);
+    greyscaleToolBar->addAction(flipcolorAct);
+
+    minTxt = new QLineEdit();
+    minTxt->setText(QString("%1").arg(QString::number(rangeSlider->minimumValue())));
+    minTxt->setMaximumWidth(50);
+    minTxt->setInputMask(tr("99999"));
+    greyscaleToolBar->addWidget(minTxt);
+
+    maxTxt = new QLineEdit();
+    maxTxt->setText(QString("%1").arg(QString::number(rangeSlider->maximumValue())));
+    maxTxt->setMaximumWidth(50);
+    maxTxt->setInputMask(tr("99999"));
+    greyscaleToolBar->addWidget(maxTxt);
+}
+
 void MainWindow::createStatusBar()
 {
     statusBar()->showMessage(tr("Ready"));
@@ -535,4 +831,12 @@ void MainWindow::switchLayoutDirection()
         QGuiApplication::setLayoutDirection(Qt::RightToLeft);
     else
         QGuiApplication::setLayoutDirection(Qt::LeftToRight);
+}
+
+void MainWindow::grayscaleChanged(int min, int max)
+{
+    QString str =  QString("range slider value(%1, %2)").arg(QString::number(min), QString::number(max));
+    qDebug(str.toLatin1());
+    minTxt->setText(QString("%1").arg(QString::number(min)));
+    maxTxt->setText(QString("%1").arg(QString::number(max)));
 }

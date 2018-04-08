@@ -9,6 +9,25 @@ class QAction;
 class QMenu;
 class QMdiArea;
 class QMdiSubWindow;
+class QLineEdit;
+class ctkRangeSlider;
+
+/*
+namespace
+{
+    const int MaxToobarActions = 20;
+    const int MaxToolbarActionTableItems = 10;
+    const int MaxRecentFiles = 5;
+}
+
+class ToobarActionMap
+{
+ public:
+    QToolBar* toobar;
+    QAction* actions[MaxToobarActions];
+
+};
+*/
 
 class MainWindow : public QMainWindow
 {
@@ -23,9 +42,7 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private slots:
-    void newFile();
-    void open();
-    void save();
+    MdiGVChild *createMdiChild();
     void saveAs();
     void updateRecentFileActions();
     void openRecentFile();
@@ -34,25 +51,74 @@ private slots:
     void updateWindowMenu();
     void switchLayoutDirection();
     void todo();
+
+    // Toolbar File
+    void newFile();
+    void open();
+    void save();
+
+    // Toolbar Zoom
     void hand();
+    void zoom4x();
     void zoomin();
     void zoomout();
-    void zoom2();
-    void zoom4();
+    void zoomregion();
+    void zoomfit();
+
+    // Toolbar Draw
     void cursor();
     void line();
-    void arrow();
-    void freeline();
-    void freepolygon();
-    void breakline();
-    void polygon();
-    void circle();
-    MdiGVChild *createMdiChild();
+    void pointer();
+    void opencurve();
+    void closedcurve();
+    void polyline();
+    void ploygon();
+    void rectangle();
+    void ellipse();
+    void removexxx();
+    void freehand();
+    void text();
+    void note();
+    void stamp();
+    void removeobject();
+    void drawsetting();
+
+    // Toolbar Mark
+    void ruler();
+    void angle();
+    void marksetting();
+
+    // Toolbar Graph
+    void lineprofile();
+    void histogram();
+
+    // Toolbar View
+    void flipV();
+    void flipH();
+    void rotate();
+
+    // Toolbar Layout
+    void oneimage();
+    void twoimageV();
+    void twoimageH();
+    void fourimage();
+
+    // Toolbar Greyscale
+    void grayscaleChanged(int min, int max);
+    void flipcolor();
 
 private:
     enum { MaxRecentFiles = 5 };
 
-    void createActions();
+    void createFileToolbarActions();
+    void createZoomToolbarActions();
+    void createDrawToolbarActions();
+    void createMarkToolbarActions();
+    void createGraphToolbarActions();
+    void createViewToolbarActions();
+    void createLayoutToolbarActions();
+    void createGreyscaleToolbarActions();
+    void createMenuActions();
     void createStatusBar();
     void readSettings();
     void writeSettings();
@@ -64,10 +130,70 @@ private:
     QMdiSubWindow *findMdiChild(const QString &fileName) const;
 
     QMdiArea *mdiArea;
-
     QMenu *windowMenu;
-    QAction *newAct;
-    QAction *saveAct;
+    QMenu *fileMenu;
+
+    QToolBar *fileToolBar;
+      QAction *newAct;
+      QAction *openAct;
+      QAction *saveAct;
+
+    QToolBar *zoomToolBar;
+      QAction *handAct;
+      QAction *zoom4xAct;
+      QAction *zoominAct;
+      QAction *zoomoutAct;
+      QAction *zoomregionAct;
+      QAction *zoomfitAct;
+
+    QToolBar *drawToolBar;
+      QAction *cursorAct;
+      QAction *lineAct;
+      QAction *pointerAct;
+      // <seperator>
+      QAction *opencurveAct;
+      QAction *closedcurveAct;
+      QAction *polylineAct;
+      QAction *ploygonAct;
+      QAction *rectangleAct;
+      QAction *ellipseAct;
+      // <seperator>
+      QAction *removexxxAct;
+      QAction *freehandAct;
+      // <seperator>
+      QAction *textAct;
+      QAction *noteAct;
+      QAction *stampAct;
+      // <seperator>
+      QAction *removeobjectAct;
+      QAction *drawsettingAct;
+
+    QToolBar *markToolBar;
+      QAction *rulerAct;
+      QAction *angleAct;
+      QAction *marksettingAct;
+
+    QToolBar *graphToolBar;
+      QAction *lineprofileAct;
+      QAction *histogramAct;
+
+    QToolBar *viewToolBar;
+      QAction *flipVAct;
+      QAction *flipHAct;
+      QAction *rotateAct;
+
+    QToolBar *layoutToolBar;
+      QAction *oneimageAct;
+      QAction *twoimageVAct;
+      QAction *twoimageHAct;
+      QAction *fourimageAct;
+
+    QToolBar *greyscaleToolBar;
+      ctkRangeSlider *rangeSlider;
+      QLineEdit *minTxt;
+      QLineEdit *maxTxt;
+      QAction *flipcolorAct;
+
     QAction *saveAsAct;
     QAction *recentFileActs[MaxRecentFiles];
     QAction *recentFileSeparator;
@@ -79,19 +205,7 @@ private:
     QAction *cascadeAct;
     QAction *nextAct;
     QAction *previousAct;
-    QAction *handAct;
-    QAction *zoominAct;
-    QAction *zoomoutAct;
-    QAction *zoom2Act;
-    QAction *zoom4Act;
-    QAction *cursorAct;
-    QAction *lineAct;
-    QAction *arrowAct;
-    QAction *freelineAct;
-    QAction *freepolygonAct;
-    QAction *breaklineAct;
-    QAction *polygonAct;
-    QAction *circleAct;
+
     QAction *windowMenuSeparatorAct;
 };
 

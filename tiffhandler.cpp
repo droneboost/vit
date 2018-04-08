@@ -3,7 +3,7 @@
 #include <qimage.h>
 #include <qglobal.h>
 
-#include "vitiffhandler.h"
+#include "tiffhandler.h"
 extern "C" {
 #include "tiffio.h"
 }

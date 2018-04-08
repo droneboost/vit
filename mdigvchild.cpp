@@ -4,7 +4,7 @@
 #include <tiffio.h>
 
 #include "mdigvchild.h"
-#include "vitiffhandler.h"
+#include "tiffhandler.h"
 
 #define USE_OPENCV_CPLUSPLUS_IF
 
@@ -14,6 +14,7 @@ MdiGVChild::MdiGVChild():mp_Mat(NULL)
     setDragMode(QGraphicsView::ScrollHandDrag);
     isUntitled = true;
     m_scene.setBackgroundBrush(Qt::gray);
+    m_scene.addText("Empty");
     setScene(&m_scene);
     TIFFSetWarningHandler(NULL);
     TIFFSetWarningHandlerExt(NULL);
@@ -45,22 +46,22 @@ bool MdiGVChild::loadFile(const QString &fileName)
     // Seems imread() use EXIF information and will crash in ApplyExifOrientataion()
     // See https://github.com/opencv/opencv/issues/6673
     // set CV_LOAD_IMAGE_IGNORE_ORIENTATION to avoid ApplyExifOrientataion crash.
-    m_Mat = cv::imread (fileName.toStdString(), CV_LOAD_IMAGE_IGNORE_ORIENTATION|CV_LOAD_IMAGE_ANYDEPTH|CV_LOAD_IMAGE_GRAYSCALE);
-    if (m_Mat.empty()) {
-        qDebug( "!!! Failed imread(): image not found");
-        return false;
-    }
+    //m_Mat = cv::imread (fileName.toStdString(), CV_LOAD_IMAGE_IGNORE_ORIENTATION|CV_LOAD_IMAGE_ANYDEPTH|CV_LOAD_IMAGE_GRAYSCALE);
+    //if (m_Mat.empty()) {
+    //    qDebug( "!!! Failed imread(): image not found");
+    //    return false;
+    //}
     //TODO: Aaron, add your image filter code herebelow for test!
 
     //cv::namedWindow( "Display OpenCV window", CV_WINDOW_AUTOSIZE );// Create a window for display.
     //cv::imshow( "Display OpenCV window", m_Mat );
 
     //Save file back
-    std::vector<int> params;
-    params.push_back(TIFFTAG_COMPRESSION);
-    params.push_back(1);
-    params.push_back(TIFFTAG_ROWSPERSTRIP );
-    params.push_back(512);
+    //std::vector<int> params;
+    //params.push_back(TIFFTAG_COMPRESSION);
+    //params.push_back(1);
+    //params.push_back(TIFFTAG_ROWSPERSTRIP );
+    //params.push_back(512);
     //cv::imwrite("D:/misc/testimg/000.tif", m_Mat, params);
 #else // USE_OPENCV_C_IF
     mp_Mat = cvLoadImageM(fileName.toStdString().c_str(), CV_LOAD_IMAGE_ANYDEPTH|CV_LOAD_IMAGE_GRAYSCALE );
