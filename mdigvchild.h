@@ -22,10 +22,12 @@ public:
     QImage readTiff(const QString &path);
     QString userFriendlyCurrentFile();
     QString currentFile() { return curFile; }
+    void addRect(qreal x, qreal y, qreal w, qreal h);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
     void wheelEvent(QWheelEvent * event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private slots:
     void documentWasModified();

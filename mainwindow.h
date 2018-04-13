@@ -11,6 +11,7 @@ class QMdiArea;
 class QMdiSubWindow;
 class QLineEdit;
 class ctkRangeSlider;
+class QLabel;
 
 /*
 namespace
@@ -193,6 +194,7 @@ private:
       QLineEdit *minTxt;
       QLineEdit *maxTxt;
       QAction *flipcolorAct;
+      QLabel *greyscaleLbl;
 
     QAction *saveAsAct;
     QAction *recentFileActs[MaxRecentFiles];

@@ -265,3 +265,17 @@ QString MdiGVChild::strippedName(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
 }
+
+void MdiGVChild::addRect(qreal x, qreal y, qreal w, qreal h)
+{
+    m_scene.addRect(x, y, w, h);
+}
+
+void MdiGVChild::mouseMoveEvent(QMouseEvent * event)
+{
+    QString str =  QString("(x,y)=(%1, %2)").arg(QString::number(event->x()), QString::number(event->y()));
+    qDebug(str.toLatin1());
+    str =  QString("(gx,gy)=(%1, %2)").arg(QString::number(event->globalX()), QString::number(event->globalY()));
+    qDebug(str.toLatin1());
+    QGraphicsView::mouseMoveEvent(event);
+}

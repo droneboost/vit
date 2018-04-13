@@ -191,132 +191,168 @@ void MainWindow::todo()
 void MainWindow::hand()
 {
     MdiGVChild *child = activeMdiChild();
-    if (child)
-        child->rotate(90.0);
+    if (child) {
+        child->setDragMode(QGraphicsView::ScrollHandDrag);
+        cursorAct->setChecked(false);
+    }
 }
 void MainWindow::zoom4x()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::zoomin()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::zoomout()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::zoomregion()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::zoomfit()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 
 // Toolbar Draw
 void MainWindow::cursor()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {
+        child->setDragMode(QGraphicsView::NoDrag);
+        handAct->setChecked(false);
+    }
 }
 void MainWindow::line()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::pointer()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::opencurve()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::closedcurve()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::polyline()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::ploygon()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::rectangle()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child)
+        child->addRect(50, 50, 200, 100);
 }
 void MainWindow::ellipse()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::removexxx()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::freehand()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::text()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::note()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::stamp()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::removeobject()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::drawsetting()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 
 // Toolbar Mark
 void MainWindow::ruler()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::angle()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::marksetting()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 
 // Toolbar Graph
 void MainWindow::lineprofile()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::histogram()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 
 // Toolbar View
 void MainWindow::flipV()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::flipH()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child) {}
 }
 void MainWindow::rotate()
 {
-
+    MdiGVChild *child = activeMdiChild();
+    if (child)
+        child->rotate(90.0);
 }
 
 // Toolbar Layout
@@ -500,7 +536,7 @@ void MainWindow::createFileToolbarActions()
     fileToolBar->addAction(newAct);
 
     const QIcon openIcon = QIcon::fromTheme("document-open", QIcon(":/images/open.png"));
-    QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
+    openAct = new QAction(openIcon, tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
@@ -521,6 +557,7 @@ void MainWindow::createZoomToolbarActions()
     const QIcon handIcon = QIcon::fromTheme("document-new", QIcon(":/images/hand.png"));
     handAct = new QAction(handIcon, tr("&Hand"), this);
     handAct->setStatusTip(tr("Toggle the image"));
+    handAct->setCheckable(true);
     connect(handAct, &QAction::triggered, this, &MainWindow::hand);
     zoomToolBar->addAction(handAct);
 
@@ -562,6 +599,7 @@ void MainWindow::createDrawToolbarActions()
     const QIcon cursorIcon = QIcon::fromTheme("document-new", QIcon(":/images/cursor.png"));
     cursorAct = new QAction(cursorIcon, tr("&Cursor"), this);
     cursorAct->setStatusTip(tr("Cursor"));
+    cursorAct->setCheckable(true);
     connect(cursorAct, &QAction::triggered, this, &MainWindow::cursor);
     drawToolBar->addAction(cursorAct);
 
@@ -748,6 +786,8 @@ void MainWindow::createLayoutToolbarActions()
     fourimageAct->setStatusTip(tr("Four Image"));
     connect(fourimageAct, &QAction::triggered, this, &MainWindow::fourimage);
     layoutToolBar->addAction(fourimageAct);
+
+    addToolBarBreak();
 }
 
 void MainWindow::createGreyscaleToolbarActions()
@@ -779,6 +819,10 @@ void MainWindow::createGreyscaleToolbarActions()
     maxTxt->setMaximumWidth(50);
     maxTxt->setInputMask(tr("99999"));
     greyscaleToolBar->addWidget(maxTxt);
+
+    greyscaleLbl = new QLabel();
+    greyscaleLbl->setText(tr("(123, 456)"));
+    greyscaleToolBar->addWidget(greyscaleLbl);
 }
 
 void MainWindow::createStatusBar()
@@ -835,8 +879,8 @@ void MainWindow::switchLayoutDirection()
 
 void MainWindow::grayscaleChanged(int min, int max)
 {
-    QString str =  QString("range slider value(%1, %2)").arg(QString::number(min), QString::number(max));
-    qDebug(str.toLatin1());
+    //QString str =  QString("range slider value(%1, %2)").arg(QString::number(min), QString::number(max));
+    //qDebug(str.toLatin1());
     minTxt->setText(QString("%1").arg(QString::number(min)));
     maxTxt->setText(QString("%1").arg(QString::number(max)));
 }
