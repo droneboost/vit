@@ -2,6 +2,8 @@
 #include <QMdiArea>
 #include <QImageReader>
 #include <tiffio.h>
+#include "opencv2/highgui.hpp"
+#include "image_filter_ade.h"
 
 #include "mdigvchild.h"
 #include "tiffhandler.h"
@@ -46,15 +48,39 @@ bool MdiGVChild::loadFile(const QString &fileName)
     // Seems imread() use EXIF information and will crash in ApplyExifOrientataion()
     // See https://github.com/opencv/opencv/issues/6673
     // set CV_LOAD_IMAGE_IGNORE_ORIENTATION to avoid ApplyExifOrientataion crash.
-    //m_Mat = cv::imread (fileName.toStdString(), CV_LOAD_IMAGE_IGNORE_ORIENTATION|CV_LOAD_IMAGE_ANYDEPTH|CV_LOAD_IMAGE_GRAYSCALE);
-    //if (m_Mat.empty()) {
-    //    qDebug( "!!! Failed imread(): image not found");
-    //    return false;
-    //}
+    m_Mat = cv::imread (fileName.toStdString(), CV_LOAD_IMAGE_IGNORE_ORIENTATION|CV_LOAD_IMAGE_ANYDEPTH|CV_LOAD_IMAGE_GRAYSCALE);
+    if (m_Mat.empty()) {
+        qDebug( "!!! Failed imread(): image not found");
+        return false;
+    }
+
     //TODO: Aaron, add your image filter code herebelow for test!
 
-    //cv::namedWindow( "Display OpenCV window", CV_WINDOW_AUTOSIZE );// Create a window for display.
-    //cv::imshow( "Display OpenCV window", m_Mat );
+#if PARAM_USAGE_1
+    vit::ADEParam adeParam;
+    adeParam.alpha     = 6.5;
+    adeParam.beta      = 15000;
+    adeParam.sigmaX    = 4.5;
+    adeParam.sigmaY    = 4.5;
+    adeParam.threshold = 1.0;
+    adeParam.amount    = 5.0;
+#else // PARAM_USAGE_2
+    vit::ADEParam adeParam(6.5, 15000, 4.5, 4.5, 1.0, 5.0);
+#endif
+
+#if INSTANCIATE_USAGE_1
+    vit::ImageFilterADE imgF(m_Mat, adeParam);
+    vit::ADERet adeRet = imgF.applyToImage(adeParam);
+#else // INSTANCIATE_USAGE_2
+    vit::ImageFilter<cv::Mat, vit::ADEParam, vit::ADEResult>* imgF = new vit::ImageFilterADE(m_Mat, adeParam);
+    vit::ADERet adeRet = imgF->applyToImage(adeParam);
+    delete(imgF);
+    imgF = NULL;
+#endif
+    qDebug("ADE Filter applied %s\n", (adeRet == vit::ADE_RESULT_OK) ? "OK" : "NG");
+
+    cv::namedWindow( "Display OpenCV window", CV_WINDOW_AUTOSIZE );// Create a window for display.
+    cv::imshow( "Display OpenCV window", m_Mat );
 
     //Save file back
     //std::vector<int> params;

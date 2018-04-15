@@ -14,13 +14,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
            mainwindow.cpp \
            mdigvchild.cpp \
-    ctkrangeslider.cpp \
-    tiffhandler.cpp
+           ctkrangeslider.cpp \
+           tiffhandler.cpp \
+           image_filter_ade.cpp
 
 HEADERS  += mainwindow.h \
             mdigvchild.h \
-    ctkrangeslider.h \
-    tiffhandler.h
+            ctkrangeslider.h \
+            tiffhandler.h \
+            image_filter.h \
+            image_filter_ade.h
 
 FORMS    +=
 
