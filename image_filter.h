@@ -17,8 +17,10 @@ public:
     virtual Ret applyToImage(const Param& param) = 0;             // Update parameters
     virtual Ret applyToImage(Image& img) = 0;                     // Update image
 
-    Image& getImage() { return img; };
+    Image& getImage() { return img; }
+    Image& setImage(Image& i) { img = i; }
     Param& getParam() { return param; }
+    Param& setParam(const Param& p) { param = p; }
 
 private:
     ImageFilter();

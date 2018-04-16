@@ -36,17 +36,21 @@ ADERet ImageFilterADE::applyToImage(cv::Mat& mat, const ADEParam &param)
     mat = contrBright * (1 + amount) + gaussBlur * (-amount);
     gaussBlur.copyTo(mat, lowContrMask);
 
+    // keep reference of image and params
+    ImageFilter::setImage(mat);
+    ImageFilter::setParam(param);
+
     return ADE_RESULT_OK;
 }
 
 ADERet ImageFilterADE::applyToImage(const ADEParam &param)
 {
-    return applyToImage(getImage(), param);
+    return applyToImage(ImageFilter::getImage(), param);
 }
 
 ADERet ImageFilterADE::applyToImage(cv::Mat& mat)
 {
-    return applyToImage(mat, getParam());
+    return applyToImage(mat, ImageFilter::getParam());
 }
 
 } // namespace vit
