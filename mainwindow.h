@@ -12,6 +12,7 @@ class QMdiSubWindow;
 class QLineEdit;
 class ctkRangeSlider;
 class QLabel;
+class QComboBox;
 
 /*
 namespace
@@ -96,7 +97,10 @@ private slots:
     // Toolbar View
     void flipV();
     void flipH();
-    void rotate();
+    void rotate0();
+    void rotate90();
+    void rotate180();
+    void rotate270();
 
     // Toolbar Layout
     void oneimage();
@@ -104,9 +108,14 @@ private slots:
     void twoimageH();
     void fourimage();
 
+    // Toolbar ImageFliter
+    void fliterChanged(const QString &text);
+
     // Toolbar Greyscale
     void grayscaleChanged(int min, int max);
     void flipcolor();
+
+    void cursorMove(int x, int y);
 
 private:
     enum { MaxRecentFiles = 5 };
@@ -118,6 +127,8 @@ private:
     void createGraphToolbarActions();
     void createViewToolbarActions();
     void createLayoutToolbarActions();
+    void createImageFliterbarActions();
+    void createMacroToolbarActions();
     void createGreyscaleToolbarActions();
     void createMenuActions();
     void createStatusBar();
@@ -181,13 +192,19 @@ private:
     QToolBar *viewToolBar;
       QAction *flipVAct;
       QAction *flipHAct;
-      QAction *rotateAct;
+      QAction *rotate0Act;
+      QAction *rotate90Act;
+      QAction *rotate180Act;
+      QAction *rotate270Act;
 
     QToolBar *layoutToolBar;
       QAction *oneimageAct;
       QAction *twoimageVAct;
       QAction *twoimageHAct;
       QAction *fourimageAct;
+
+   QToolBar *imageFliterToolBar;
+      QComboBox *imageFliter;
 
     QToolBar *greyscaleToolBar;
       ctkRangeSlider *rangeSlider;

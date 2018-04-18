@@ -31,7 +31,8 @@ protected:
 
 private slots:
     void documentWasModified();
-
+signals:
+    void cursorMove(int x, int y);
 private:
     bool maybeSave();
     void setCurrentFile(const QString &fileName);

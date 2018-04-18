@@ -7,6 +7,7 @@
 
 #include "mdigvchild.h"
 #include "tiffhandler.h"
+#include "asmOpenCV.h"
 
 #define USE_OPENCV_CPLUSPLUS_IF
 
@@ -79,8 +80,8 @@ bool MdiGVChild::loadFile(const QString &fileName)
 #endif
     qDebug("ADE Filter applied %s\n", (adeRet == vit::ADE_RESULT_OK) ? "OK" : "NG");
 
-    cv::namedWindow( "Display OpenCV window", CV_WINDOW_AUTOSIZE );// Create a window for display.
-    cv::imshow( "Display OpenCV window", m_Mat );
+    //cv::namedWindow( "Display OpenCV window", CV_WINDOW_AUTOSIZE );// Create a window for display.
+    //cv::imshow( "Display OpenCV window", m_Mat );
 
     //Save file back
     //std::vector<int> params;
@@ -107,6 +108,7 @@ bool MdiGVChild::loadFile(const QString &fileName)
 
    // Also open an QGraphicView to show img read by raw Tiff IF wrap in vitiffhandler class.
     m_rawimg = readTiff(fileName);
+    m_rawimg = ASM::cvMatToQImage(m_Mat);
     m_pixmap = QPixmap::fromImage(m_rawimg);
     m_scene.addPixmap(m_pixmap);
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -303,5 +305,6 @@ void MdiGVChild::mouseMoveEvent(QMouseEvent * event)
     qDebug(str.toLatin1());
     str =  QString("(gx,gy)=(%1, %2)").arg(QString::number(event->globalX()), QString::number(event->globalY()));
     qDebug(str.toLatin1());
+    emit cursorMove(event->x(), event->y());
     QGraphicsView::mouseMoveEvent(event);
 }

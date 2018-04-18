@@ -23,7 +23,8 @@ HEADERS  += mainwindow.h \
             ctkrangeslider.h \
             tiffhandler.h \
             image_filter.h \
-            image_filter_ade.h
+            image_filter_ade.h \
+    asmOpenCV.h
 
 FORMS    +=
 

@@ -23,6 +23,9 @@ MainWindow::MainWindow()
     createGraphToolbarActions();
     createViewToolbarActions();
     createLayoutToolbarActions();
+    addToolBarBreak(); // Break the toolbar layout and start a new toolbar line
+    createImageFliterbarActions();
+    createMacroToolbarActions();
     createGreyscaleToolbarActions();
     createMenuActions();
 
@@ -348,11 +351,29 @@ void MainWindow::flipH()
     MdiGVChild *child = activeMdiChild();
     if (child) {}
 }
-void MainWindow::rotate()
+void MainWindow::rotate0()
+{
+    MdiGVChild *child = activeMdiChild();
+    if (child)
+        child->rotate(0.0);
+}
+void MainWindow::rotate90()
 {
     MdiGVChild *child = activeMdiChild();
     if (child)
         child->rotate(90.0);
+}
+void MainWindow::rotate180()
+{
+    MdiGVChild *child = activeMdiChild();
+    if (child)
+        child->rotate(180.0);
+}
+void MainWindow::rotate270()
+{
+    MdiGVChild *child = activeMdiChild();
+    if (child)
+        child->rotate(270.0);
 }
 
 // Toolbar Layout
@@ -373,7 +394,13 @@ void MainWindow::fourimage()
     mdiArea->tileSubWindows();
 }
 
-//Greyscale
+// Toolbar Image Fliter
+void MainWindow::fliterChanged(const QString &text)
+{
+    qDebug(text.toLatin1());
+}
+
+// Toolbar Greyscale
 void MainWindow::flipcolor()
 {
 
@@ -436,6 +463,7 @@ MdiGVChild *MainWindow::createMdiChild()
     size = size / 2;
     QMdiSubWindow *sw = mdiArea->addSubWindow(child);
     sw->resize(size);
+    connect(child, &MdiGVChild::cursorMove, this, &MainWindow::cursorMove);
     return child;
 }
 
@@ -753,10 +781,36 @@ void MainWindow::createViewToolbarActions()
     viewToolBar->addAction(flipHAct);
 
     const QIcon rotateIcon = QIcon::fromTheme("document-new", QIcon(":/images/rotate.png"));
-    rotateAct = new QAction(rotateIcon, tr("&Rotate"), this);
-    rotateAct->setStatusTip(tr("Rotate Image"));
-    connect(rotateAct, &QAction::triggered, this, &MainWindow::rotate);
-    viewToolBar->addAction(rotateAct);
+    //rotateAct = new QAction(rotateIcon, tr("&Rotate"), this);
+    rotate0Act = new QAction(tr("&Rotate0"), this);
+    rotate0Act->setStatusTip(tr("Rotate Image 0 degree"));
+    connect(rotate0Act, &QAction::triggered, this, &MainWindow::rotate0);
+    rotate90Act = new QAction(tr("&Rotate90"), this);
+    rotate90Act->setStatusTip(tr("Rotate Image 90 degree"));
+    connect(rotate90Act, &QAction::triggered, this, &MainWindow::rotate90);
+    rotate180Act = new QAction(tr("&Rotate180"), this);
+    rotate180Act->setStatusTip(tr("Rotate Image 180 degree"));
+    connect(rotate180Act, &QAction::triggered, this, &MainWindow::rotate180);
+    rotate270Act = new QAction(tr("&Rotate270"), this);
+    rotate270Act->setStatusTip(tr("Rotate Image 270 degree"));
+    connect(rotate270Act, &QAction::triggered, this, &MainWindow::rotate270);
+    //viewToolBar->addAction(rotateAct);
+
+    QMenu *menu = new QMenu();
+    menu->addAction(rotate0Act);
+    menu->addAction(rotate90Act);
+    menu->addAction(rotate180Act);
+    menu->addAction(rotate270Act);
+
+    QToolButton* toolButton = new QToolButton();
+    toolButton->setIcon(rotateIcon);
+    toolButton->setMenu(menu);
+    toolButton->setPopupMode(QToolButton::InstantPopup);
+
+    QWidgetAction* toolButtonAction = new QWidgetAction(this);
+    toolButtonAction->setDefaultWidget(toolButton);
+
+    viewToolBar->addAction(toolButtonAction);
 }
 
 void MainWindow::createLayoutToolbarActions()
@@ -786,8 +840,26 @@ void MainWindow::createLayoutToolbarActions()
     fourimageAct->setStatusTip(tr("Four Image"));
     connect(fourimageAct, &QAction::triggered, this, &MainWindow::fourimage);
     layoutToolBar->addAction(fourimageAct);
+}
 
-    addToolBarBreak();
+void MainWindow::createImageFliterbarActions()
+{
+    imageFliterToolBar = addToolBar(tr("ImageFliterToolBar"));
+    imageFliter = new QComboBox();
+    QStringList fliterList;
+    fliterList << tr("");
+    fliterList << tr("ADE Fliter") << tr("Laplacian Fliter") << tr("Max Fliter") << tr("Mean Fliter");
+    fliterList << tr("Median Fliter") << tr("Min Fliter") << tr("New Fliter") << tr("Sharpen Fliter");
+    fliterList << tr("Smooth Fliter") << tr("Sobel Fliter");
+    imageFliter->addItems(fliterList);
+    imageFliter->setMaximumWidth(150);
+    imageFliterToolBar->addWidget(imageFliter);
+    connect(imageFliter, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), this, &MainWindow::fliterChanged);
+}
+
+void MainWindow::createMacroToolbarActions()
+{
+
 }
 
 void MainWindow::createGreyscaleToolbarActions()
@@ -883,4 +955,11 @@ void MainWindow::grayscaleChanged(int min, int max)
     //qDebug(str.toLatin1());
     minTxt->setText(QString("%1").arg(QString::number(min)));
     maxTxt->setText(QString("%1").arg(QString::number(max)));
+}
+
+
+void MainWindow::cursorMove(int x, int y)
+{
+    QString str =  QString("(%1, %2)").arg(QString::number(x), QString::number(y));
+    greyscaleLbl->setText(str);
 }
